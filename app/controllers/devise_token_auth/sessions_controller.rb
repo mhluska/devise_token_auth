@@ -34,6 +34,10 @@ module DeviseTokenAuth
         @client_id = SecureRandom.urlsafe_base64(nil, false)
         @token     = SecureRandom.urlsafe_base64(nil, false)
 
+        if @resource.tokens.class == String
+          @resource.tokens = JSON.parse(@resource.tokens)
+        end
+
         @resource.tokens[@client_id] = {
           token: BCrypt::Password.create(@token),
           expiry: (Time.now + DeviseTokenAuth.token_lifespan).to_i
